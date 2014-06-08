@@ -1,0 +1,19 @@
+$ git config --global user.name "ara69"
+$ git config --global user.email "arabinda.mandal@tcs.com"
+
+$ git config --list
+core.symlinks=false
+core.autocrlf=true
+color.diff=auto
+color.status=auto
+color.branch=auto
+color.interactive=true
+pack.packsizelimit=2g
+help.format=html
+http.sslcainfo=/bin/curl-ca-bundle.crt
+sendemail.smtpserver=/bin/msmtp.exe
+diff.astextplain.textconv=astextplain
+rebase.autosquash=true
+gui.recentrepo=C:/ArabindaMandal/Office/TCS/Work/Dev/R/Coursera
+user.name=ara69
+user.email=arabinda.mandal@tcs.com

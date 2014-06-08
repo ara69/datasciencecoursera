@@ -141,6 +141,9 @@ x
 
 # Read a csv file
 
+
+getwd()
+
 x <- read.csv("hw1_data.csv")
 x
 
