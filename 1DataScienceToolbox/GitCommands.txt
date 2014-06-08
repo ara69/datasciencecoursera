@@ -17,3 +17,39 @@ rebase.autosquash=true
 gui.recentrepo=C:/ArabindaMandal/Office/TCS/Work/Dev/R/Coursera
 user.name=ara69
 user.email=arabinda.mandal@tcs.com
+
+
+-- Initialize the git root
+cd /c/ArabindaMandal/Office/TCS/Work/Dev/R/Coursera
+init git
+
+-- To add/update
+git add -A
+
+-- To commit the local version
+git commit -m "Initial Version"
+
+- Push the local files to GitHub
+
+git remote add origin https://github.com/ara69/Coursera.git
+git push -u origin master
+
+-- To see the git remote
+git remote -v
+
+-- To push the local changes to remote
+git push
+git push origin --tags
+git push origin v1.5
+git push origin master
+
+-- To checkout the main branch
+git checkout master
+
+-- To pull the remote to local
+git pull origin master
+git pull https://github.com/ara69/Coursera.git
+
+
+
+
