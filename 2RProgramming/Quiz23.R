@@ -17,6 +17,9 @@ s
 sapply(s, function(x) colMeans(x[, c("Sepal.Length", "Sepal.Width", 
                                      "Petal.Length", "Petal.Width")]))
 
+tapply(iris$Sepal.Length, iris$Species, mean)
+
+
 #              setosa versicolor virginica
 #Sepal.Length  5.006      5.936     6.588
 #Sepal.Width   3.428      2.770     2.974
