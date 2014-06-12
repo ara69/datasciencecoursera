@@ -22,4 +22,11 @@ pollutantmean("specdata", "sulfate", 100:300)
 print("Nitrate mean : ")
 pollutantmean("specdata", "nitrate", 1:332)
 
+# Validate with sample
 
+pollutantmean("specdata", "sulfate", 1:10)
+## [1] 4.064
+pollutantmean("specdata", "nitrate", 70:72)
+## [1] 1.706
+pollutantmean("specdata", "nitrate", 23)
+## [1] 1.281
