@@ -27,24 +27,36 @@ complete <- function(directory, id = 1:332) {
         filename = paste0(directory, "/", pidname, ".csv")       
         csvdata = read.csv(filename)
         
-        non_na_rows <- csvdata[complete.cases(csvdata),]
-        length(non_na_rows$ID)
+        # Form a dataframe of complete data (with no NA)
+        complete_data <- csvdata[complete.cases(csvdata),]
+        # Return the count of complete rows
+        length(complete_data$ID)
     }
     
     
-    # The main function
-    print("##    id  nobs")    
-    pos <- 1
-    if(length(id) == 1) {
+    # The main function   
+    row_count <- length(id) # No of rows (no of passed ids)
+    # Define the output complete count matrix of id 
+    # and nobs(no of complete rows)
+    mccount <- matrix(nrow = row_count, ncol=2, 
+                      dimnames=list(1:row_count, c("id", "nobs"))) 
+    
+   pos <- 0
+   if(row_count == 1) {
         # Find the complete count from single file
-        print(paste("## ", pos, id, get.complete.count(directory, id), sep=" "))
+        pos <- pos + 1
+        mccount[pos,1] <- id
+        mccount[pos,2] <- get.complete.count(directory, id)
     } else {
         # Find the complete count from the list of id files
         for (idname in id) {            
-            print(paste("## ", pos, idname, get.complete.count(directory, idname), sep=" "))
             pos <- pos + 1
+            mccount[pos,1] <- idname
+            mccount[pos,2] <- get.complete.count(directory, idname)
         }
     }
+    # Populate the output data frame and return
+    rbind(mccount)
 }
 
 
