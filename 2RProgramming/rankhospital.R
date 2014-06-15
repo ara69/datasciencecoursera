@@ -37,7 +37,8 @@ rankhospital <- function(state, outcome, num = "best") {
     
     # Filter on state
     state.hospital <- na.omit(hospital[hospital$state == state,])
-    #print(head(state.hospital))
+    # Suppress the state
+    state.hospital$state <- NULL
         
     if(nrow(state.hospital) == 0) {
         stop("invalid state")
@@ -48,42 +49,48 @@ rankhospital <- function(state, outcome, num = "best") {
     if(identical(outcome, "heart attack")) {
         state.hospital$heart.failure <- NULL
         state.hospital$pneumonia <- NULL
-        sorted.hospital <- state.hospital[with(state.hospital, 
-                                                order(heart.attack, hospital.name)), ]
+        ranked.state <- state.hospital[do.call(order, state.hospital), ]
     } else if(identical(outcome, "heart failure")) {
         state.hospital$heart.attack <- NULL
         state.hospital$pneumonia <- NULL
         ranked.state <- state.hospital[do.call(order, state.hospital), ]
-
     } else if(identical(outcome, "pneumonia")) {
         state.hospital$heart.attack <- NULL
         state.hospital$heart.failure <- NULL
-        sorted.hospital <- state.hospital[with(state.hospital, 
-                            order(pneumonia, hospital.name)), ]
+        ranked.state <- state.hospital[do.call(order, state.hospital), ]
     } else {
         stop("invalid outcome")
     }
     
-    # Return the hospital name of the best outcome    
-    print(head(ranked.state))
+    # Print for testing  
+     print("Top hospitals")
+     print(head(ranked.state))
+     print("Bottom hospitals")
+     print(tail(ranked.state))
     
     
-    if(num == "best"){		
-        ranked.hospital = ranked.state[1, "hospital.name"]	
-    } else if(num == "worst"){		
+    ranked.hospital <- NULL # Vector containing the ranked state name
+    if(num == "best"){	
+        # First row in ranked.hospital
+        ranked.hospital = ranked.state[1, 2]	
+    } else if(num == "worst"){
+        # Last row in ranked.hospital
         worst.row = max(ranked.state[, 1])		
-        ranked.hospital = ranked.state[which(ranked.state[, 1] == worst.row), 
-                                       "hospital.name"]	
-    } else {		
+        ranked.hospital = ranked.state[which(ranked.state[, 1] == worst.row), 2]	
+    } else {
+        # num'th row in ranked.hospital
         num = as.integer(num)		
         if(typeof(num) == "integer" && nrow(ranked.state) >= num){			
-            ranked.hospital = ranked.state[num, "hospital.name"]		
-        } else {			
-            NA		
+            ranked.hospital = ranked.state[num, 2]		
+        } else {
+            # Invalid rank
+            ranked.hospital <- NA		
         }	
     }	
     
-    ranked.hospital = as.character(ranked.hospital)
+    
+    # Return the hospital name for the given state, outcome and rank 
+    as.character(ranked.hospital)
 }
  
 
@@ -96,5 +103,9 @@ rankhospital("TX", "heart failure", 4)
 rankhospital("MD", "heart attack", "worst")
 #[1] "HARFORD MEMORIAL HOSPITAL"
 
-#rankhospital("MN", "heart attack", 5000)
+rankhospital("MN", "heart attack", 5000)
 #[1] NA
+
+
+rankhospital("CA", "pneumonia", 5)
+#[1] PROVIDENCE TARZANA MEDICAL CENTER

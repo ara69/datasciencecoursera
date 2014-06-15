@@ -17,8 +17,8 @@ read.hospital.data <- function() {
                 heart.attack = as.numeric(outcome[,11]), 
                 heart.failure = as.numeric(outcome[,17]), 
                 pneumonia = as.numeric(outcome[,23]),
-                hospital.name = outcome[,2], 
-                state = outcome[,7]
+                hospital.name = outcome[,2],               
+                state = outcome[,7]                
                 ))
     
     

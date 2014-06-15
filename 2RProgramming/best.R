@@ -50,10 +50,8 @@ best <- function(state, outcome) {
     }
     
     
-    # Sort on the given outcome
-    sort(sho)
     # Return the hospital name of the best outcome    
-    sho$hospital.name
+    as.character(sho$hospital.name)
 }
  
 
