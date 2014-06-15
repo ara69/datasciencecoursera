@@ -13,11 +13,13 @@ read.hospital.data <- function() {
     # Heart Attack (column 11)
     # Heart Failure (column 17)
     # Pneumonia (column 23)
-    df <- data.frame(hospital.name = outcome[,2], 
-                state = outcome[,7], 
+    suppressWarnings(df <- data.frame(
                 heart.attack = as.numeric(outcome[,11]), 
                 heart.failure = as.numeric(outcome[,17]), 
-                pneumonia = as.numeric(outcome[,23]))
+                pneumonia = as.numeric(outcome[,23]),
+                hospital.name = outcome[,2], 
+                state = outcome[,7]
+                ))
     
     
     row.names(df) <- outcome[,1]

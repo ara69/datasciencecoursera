@@ -20,29 +20,28 @@ complete <- function(directory, id = 1:332) {
     
     # Supporting function
     
-    # Read the file with given idname and get the mean for the pollutant
+    # Read the file with given idname and get the no of non-na rows
     get.complete.count <- function(directory, idname) {
-        pidname = sprintf("%03d", idname) # padded idname, for 2 use 002
         # Read the csv file
-        filename = paste0(directory, "/", pidname, ".csv")       
+        filename = paste0(directory, "/", formatC(idname, width=3, flag="0"), ".csv")       
         csvdata = read.csv(filename)
         
         # Form a dataframe of complete data (with no NA)
-        complete_data <- csvdata[complete.cases(csvdata),]
+        complete.data <- csvdata[complete.cases(csvdata),]
         # Return the count of complete rows
-        length(complete_data$ID)
+        nrow(complete.data)
     }
     
     
     # The main function   
-    row_count <- length(id) # No of rows (no of passed ids)
+    row.count <- length(id) # No of rows (no of passed ids)
     # Define the output complete count matrix of id 
     # and nobs(no of complete rows)
-    mccount <- matrix(nrow = row_count, ncol=2, 
-                      dimnames=list(1:row_count, c("id", "nobs"))) 
+    mccount <- matrix(nrow = row.count, ncol=2, 
+                      dimnames=list(1:row.count, c("id", "nobs"))) 
     
    pos <- 0
-   if(row_count == 1) {
+   if(row.count == 1) {
         # Find the complete count from single file
         pos <- pos + 1
         mccount[pos,1] <- id
@@ -56,9 +55,11 @@ complete <- function(directory, id = 1:332) {
         }
     }
     # Populate the output data frame and return
-    rbind(mccount)
+    data.frame(mccount)
 }
 
+
+# Sample Test
 
 complete("specdata", 1)
 ##   id nobs
@@ -70,3 +71,14 @@ complete("specdata", c(2, 4, 8, 10, 12))
 ## 3  8  192
 ## 4 10  148
 ## 5 12   96
+complete("specdata", 30:25)
+##   id nobs
+## 1 30  932
+## 2 29  711
+## 3 28  475
+## 4 27  338
+## 5 26  586
+## 6 25  463
+complete("specdata", 3)
+##   id nobs
+## 1  3  243

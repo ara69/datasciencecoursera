@@ -35,47 +35,45 @@ pollutantmean <- function(directory, pollutant, id = 1:332) {
         i
     }
     
-    # Read the file with given idname and get the mean for the pollutant
-    get.mean <- function(directory, pollutant, idname) {
-        pidname = sprintf("%03d", idname) # padded idname, for 2 use 002
+    # Reads the file with given idname and returns the filltered (non-na) pollutant
+    get.filtered.data <- function(directory, pollutant, idname) {
         # Read the csv file
-        filename = paste0(directory, "/", pidname, ".csv")       
+        filename = paste0(directory, "/", formatC(idname, width=3, flag="0"), ".csv")       
         csvdata = read.csv(filename)
         
         # Get the column index of the pollutant
-        idx <- get.col.index(pollutant)           
-        filtered_data <- csvdata[,idx][!is.na(csvdata[,idx])]
-        mean(filtered_data)
+        idx <- get.col.index(pollutant)  
+        # Populate a dataframe with only the required pollutant
+        filtered.data <- data.frame(csvdata[,idx])
+        # Return the non-na rows
+        filtered.data[!is.na(filtered.data)]
     }
     
     
     # Main function starts here
     
-    means <- NULL # The vector of means for the given ids
-    pos <- 0      # Indexes of the ids
-    pmean <- 0    # The final pollutant mean for the given ids
+    # The vector of filtered (non-na) pollutants for all ids
+    filtered.pollutant <- NULL
     
-    if(length(id) == 1) {
-        # Find the mean from single file
-        pmean <- get.mean(directory, pollutant, id)
-    } else {
-        # Find the mean from the list of id files
-        for (idname in id) {
-            
-            means[pos] <- get.mean(directory, pollutant, idname)
-            pos <- pos + 1
-        }
-        pmean <- mean(means, na.rm = TRUE)    
+    
+    # Find the mean from the list of id files
+    for (idname in id) {
+       filtered.pollutant <- c(filtered.pollutant, 
+                              get.filtered.data(directory, pollutant, idname))
     }
     
-    pmean # return the final mean for the given file names
+    # Return the mean of the filtered pollutants
+    mean(filtered.pollutant)    
 }
 
 
 
-# Unit test for single file
-pollutantmean("specdata", "sulfate", 7)
+# Sample tests
 
+pollutantmean("specdata", "sulfate", 1:10)
+## [1] 4.064
+pollutantmean("specdata", "nitrate", 70:72)
+## [1] 1.706
+pollutantmean("specdata", "nitrate", 23)
+## [1] 1.281
 
-# Unit test for multiple file
-pollutantmean("specdata", "nitrate", 50:60)
