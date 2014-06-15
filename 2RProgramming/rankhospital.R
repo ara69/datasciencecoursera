@@ -63,32 +63,31 @@ rankhospital <- function(state, outcome, num = "best") {
     }
     
     # Print for testing  
-     print("Top hospitals")
-     print(head(ranked.state))
-     print("Bottom hospitals")
-     print(tail(ranked.state))
+    # print("Top hospitals")
+    # print(head(ranked.state))
+    # print("Bottom hospitals")
+    # print(tail(ranked.state))
     
     
-    ranked.hospital <- NULL # Vector containing the ranked state name
+    ranked.hospital <- NULL # Vector containing the ranked hospital name
     if(num == "best"){	
         # First row in ranked.hospital
-        ranked.hospital = ranked.state[1, 2]	
+        num <- 1	
     } else if(num == "worst"){
         # Last row in ranked.hospital
-        worst.row = max(ranked.state[, 1])		
-        ranked.hospital = ranked.state[which(ranked.state[, 1] == worst.row), 2]	
+        num <- nrow(ranked.state)		
+    } 
+    
+    # num'th row in ranked.hospital
+    num = as.integer(num)		
+    if(typeof(num) == "integer" && nrow(ranked.state) >= num){			
+        ranked.hospital = ranked.state[num, 2]		
     } else {
-        # num'th row in ranked.hospital
-        num = as.integer(num)		
-        if(typeof(num) == "integer" && nrow(ranked.state) >= num){			
-            ranked.hospital = ranked.state[num, 2]		
-        } else {
-            # Invalid rank
-            ranked.hospital <- NA		
-        }	
+        # Invalid rank
+        ranked.hospital <- NA		
     }	
-    
-    
+    	
+        
     # Return the hospital name for the given state, outcome and rank 
     as.character(ranked.hospital)
 }
