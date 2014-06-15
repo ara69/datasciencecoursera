@@ -14,79 +14,33 @@ source("readhospitaldata.R") # To read the outcome csv file
 
 rankall <- function(outcome, num = "best") {
            
-    hospital <- read.hospital.data()
-    
-       
-    if(nrow(hospital) == 0) {
-        stop("invalid state")
-    }
+    hospital <- read.hospital.data(outcome)
+        
     
     ranked.data <- NULL
     
-    if(identical(outcome, "heart attack")) {
-        hospital$heart.failure <- NULL
-        hospital$pneumonia <- NULL
-        hospital <- na.omit(hospital)
-        sort.fld <- list(hospital$state, 
-                         hospital$heart.attack, 
-                         hospital$hospital.name)
-        ranked.data <- hospital[do.call(order, sort.fld), ]
-    } else if(identical(outcome, "heart failure")) {
-        hospital$heart.attack <- NULL
-        hospital$pneumonia <- NULL
-        hospital <- na.omit(hospital)
-        sort.fld <- list(hospital$state, 
-                         hospital$heart.failure, 
-                         hospital$hospital.name)
-        ranked.data <- hospital[do.call(order, sort.fld), ]
-    } else if(identical(outcome, "pneumonia")) {
-        hospital$heart.attack <- NULL
-        hospital$heart.failure <- NULL
-        hospital <- na.omit(hospital)
-        sort.fld <- list(hospital$state, 
-                         hospital$pneumonia, 
-                         hospital$hospital.name)
-        ranked.data <- hospital[do.call(order, sort.fld), ]
-    } else {
-        stop("invalid outcome")
+    for(state in unique(hospital$state)) {
+        state.data <- hospital[hospital$state == state, ]
+        rank.no <- rank.number(state.data, num) 
+        
+        df <- NULL
+        if(is.na(rank.no)){
+            df <- data.frame(hospital=rank.no, state=state)
+        } else {
+            result <- state.data[do.call(order, state.data), ][rank.no, ]
+            df <- data.frame(hospital=result$hospital, state=state)
+        }
+        row.names(df) <- state
+        ranked.data <- rbind(ranked.data, df)
     }
     
     # Print for testing  
-     print("Top hospitals")
-     print(head(ranked.data))
-     print("Bottom hospitals")
-     print(tail(ranked.data))
+    # print("Top hospitals")
+    # print(head(ranked.data))
+    # print("Bottom hospitals")
+    # print(tail(ranked.data))
     
-    
-    # Vector containing the ranked hospital name and state name
-    ranked.hospital <- NULL
-    
-    if(num == "best"){	
-        # First row in ranked.hospital
-        num <- 1
-        ranked.hospital = ranked.data[1, ]	
-    } else if(num == "worst"){
-        # Last row in ranked.hospital
-        num <- max(ranked.data[, 1])		
-        ranked.hospital = ranked.data[which(ranked.data[, 1] == worst.row), ]	
-    } else {
-        # num'th row in ranked.hospital
-        num = as.integer(num)		
-        if(typeof(num) == "integer" && nrow(ranked.data) >= num){			
-            ranked.hospital = ranked.data[num, ]		
-        } else {
-            # Invalid rank
-            ranked.hospital <- NA		
-        }	
-    }	
-    
-    print(ranked.hospital)
-    
-    # Drop the death rate column
-    ranked.hospital[,1] <- NULL
-    
-    # Return the hospital name for the given state, outcome and rank 
-    as.character(ranked.hospital)
+    ranked.data[do.call(order, list(ranked.data$state, ranked.data$hospital)), ]
 }
  
 

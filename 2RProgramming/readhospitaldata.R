@@ -3,8 +3,8 @@
 
 require(stats)
 
-read.hospital.data <- function() {
-    outcome <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+read.hospital.data <- function(outcome="") {
+    result <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
     # Form the data frame rows as provider name (column 1) and 
     # only with the columns
     # Provider Name (column 1)
@@ -13,23 +13,45 @@ read.hospital.data <- function() {
     # Heart Attack (column 11)
     # Heart Failure (column 17)
     # Pneumonia (column 23)
+    
+    colno <- 0
+    if(identical(outcome, "heart attack")) {
+        colno <- 17
+    } else if(identical(outcome, "heart failure")) {
+        colno <- 11
+    } else if(identical(outcome, "pneumonia")) {
+        colno <- 23
+    } else {
+        stop("invalid outcome")
+    }
+    
     suppressWarnings(df <- data.frame(
-                heart.attack = as.numeric(outcome[,11]), 
-                heart.failure = as.numeric(outcome[,17]), 
-                pneumonia = as.numeric(outcome[,23]),
-                hospital.name = outcome[,2],               
-                state = outcome[,7]                
+                rate = as.numeric(result[,colno]), 
+                hospital = result[,2],               
+                state = result[,7]                
                 ))
     
     
-    row.names(df) <- outcome[,1]
+    row.names(df) <- result[,1]
     # retun the populated data frame
-    df
+    na.omit(df)
     
 }
 
-# Test the read.hospital.data
-oc <- read.hospital.data()
-class(oc)
-names(oc)
-head(oc)
+# Returns the rank number after decoding best, worst
+rank.number <- function(df, num="best") {
+    rank.no <- 0
+    if (num == "best") {    
+        rank.no <- 1  
+    } else if (num == "worst") { 
+        rank.no = nrow(df) # No of rows
+    } else {    
+        rank.no <- as.numeric(num)    
+        if (is.na(rank.no)) {      
+            stop("invalid num")    
+        } else if (rank.no > nrow(df)) {      
+            return(NA)    
+        }  
+    }
+    rank.no   
+}

@@ -15,3 +15,8 @@ hist(outcome[, 11])
 
 source("submitscript1.R")
 submit()
+
+
+source("submitscript3.R")
+submit()
+
