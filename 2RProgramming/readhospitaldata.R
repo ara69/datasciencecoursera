@@ -1,8 +1,6 @@
 # Assignment 2
 # Read the csv file and generate histogram for heart attack mortality rate
 
-require(stats)
-
 read.hospital.data <- function(outcome="") {
     result <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
     # Form the data frame rows as provider name (column 1) and 
@@ -14,11 +12,11 @@ read.hospital.data <- function(outcome="") {
     # Heart Failure (column 17)
     # Pneumonia (column 23)
     
-    colno <- 0
+    colno <- 0 # The column no for the given outcome
     if(identical(outcome, "heart attack")) {
-        colno <- 17
-    } else if(identical(outcome, "heart failure")) {
         colno <- 11
+    } else if(identical(outcome, "heart failure")) {
+        colno <- 17
     } else if(identical(outcome, "pneumonia")) {
         colno <- 23
     } else {
@@ -33,12 +31,12 @@ read.hospital.data <- function(outcome="") {
     
     
     row.names(df) <- result[,1]
-    # retun the populated data frame
+    # retun the populated data frame after omitting the NAs
     na.omit(df)
     
 }
 
-# Returns the rank number after decoding best, worst
+# Returns the rank number after parsing the number and decoding best, worst 
 rank.number <- function(df, num="best") {
     rank.no <- 0
     if (num == "best") {    

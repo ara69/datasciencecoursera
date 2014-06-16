@@ -13,34 +13,33 @@ source("readhospitaldata.R") # To read the outcome csv file
 # The function should use the following template.
 
 rankall <- function(outcome, num = "best") {
-           
+    ## Read outcome data and check the outcome are valid
     hospital <- read.hospital.data(outcome)
-        
-    
+            
+    ## For each state, find the hospital of the given rank
     ranked.data <- NULL
     
-    for(state in unique(hospital$state)) {
+    for(state in levels(hospital$state)) {
+        # The hospital data for this state
         state.data <- hospital[hospital$state == state, ]
         rank.no <- rank.number(state.data, num) 
         
-        df <- NULL
+        result <- NULL
         if(is.na(rank.no)){
-            df <- data.frame(hospital=rank.no, state=state)
+            result <- data.frame(hospital=rank.no, state=state)
         } else {
-            result <- state.data[do.call(order, state.data), ][rank.no, ]
-            df <- data.frame(hospital=result$hospital, state=state)
+            ranked.state <- state.data[do.call(order, state.data), ][rank.no, ]
+            result <- data.frame(hospital=ranked.state$hospital, state=state)
         }
-        row.names(df) <- state
-        ranked.data <- rbind(ranked.data, df)
+        row.names(result) <- state
+        ## Populate the data frame with the hospital names and the
+        ## (abbreviated) state name
+        ranked.data <- rbind(ranked.data, result)
     }
-    
-    # Print for testing  
-    # print("Top hospitals")
-    # print(head(ranked.data))
-    # print("Bottom hospitals")
-    # print(tail(ranked.data))
-    
-    ranked.data[do.call(order, list(ranked.data$state, ranked.data$hospital)), ]
+        
+    ## Return the data frame with the hospital names and the
+    ## (abbreviated) state name
+    ranked.data
 }
  
 

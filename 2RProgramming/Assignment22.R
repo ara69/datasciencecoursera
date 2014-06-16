@@ -12,11 +12,11 @@ outcome[, 11] <- as.numeric(outcome[, 11])
 hist(outcome[, 11])
 
 
-
+# Assignmet 2 - Part 1 (online submission)
 source("submitscript1.R")
 submit()
 
-
+# Assignmet 2 - Part 3 (online submission)
 source("submitscript3.R")
 submit()
 

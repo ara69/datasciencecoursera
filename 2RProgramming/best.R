@@ -10,48 +10,20 @@ source("readhospitaldata.R") # To read the outcome csv file
 
 # The function best
 best <- function(state, outcome) {
-    ## Read outcome data
-    ## Check that state and outcome are valid
-    ## Return hospital name in that state with lowest 30-day death
-    ## rate
+    ## Read outcome data and validate the outcome
+    hospital <- read.hospital.data(outcome)
     
-    hospital <- read.hospital.data()
-    
-    #print(head(hospital))
-    
-    # Filter on state
-    state.hospital <- hospital[hospital$state == state,]
-    #print(head(state.hospital))
+    ## Check and populate that state data
+    state.data <- hospital[hospital$state == state,]
         
-    if(nrow(state.hospital) == 0) {
+    if(nrow(state.data) == 0) {
         stop("invalid state")
     }
-    
-    # State hospital outcome (Filtered on the outcome)
-    sho <- NULL
-    
-    if(identical(outcome, "heart attack")) {
-        min.outcome = min(state.hospital$heart.attack, na.rm = TRUE)
-        sho <- state.hospital[(state.hospital$heart.attack 
-                                                 == min.outcome), ]
-        sho <- sho[complete.cases(sho),]       
-    } else if(identical(outcome, "heart failure")) {
-        min.outcome = min(state.hospital$heart.failure, na.rm = TRUE)
-        sho <- state.hospital[(state.hospital$heart.failure 
-                               == min.outcome), ]
-        sho <- sho[complete.cases(sho),]
-    } else if(identical(outcome, "pneumonia")) {
-        min.outcome = min(state.hospital$pneumonia, na.rm = TRUE)
-        sho <- state.hospital[(state.hospital$pneumonia 
-                               == min.outcome), ]
-        sho <- sho[complete.cases(sho),]
-    } else {
-        stop("invalid outcome")
-    }
-    
-    
-    # Return the hospital name of the best outcome    
-    as.character(sho$hospital.name)
+        
+    ## Return hospital name in that state with lowest 30-day death rate
+    min.outcome = min(state.data$rate, na.rm = TRUE)
+    min.state.data <- state.data[(state.data$rate == min.outcome), ]
+    as.character(min.state.data$hospital)
 }
  
 
@@ -66,11 +38,11 @@ best("TX", "heart failure")
 best("MD", "heart attack")
 #[1] "JOHNS HOPKINS HOSPITAL, THE"
 
-#best("MD", "pneumonia")
-#[1] "GREATER BALTIMORE MEDICAL CENTER"
-
 #best("BB", "heart attack")
 #Error in best("BB", "heart attack") : invalid state
 
 #best("NY", "hert attack")
 #Error in best("NY", "hert attack") : invalid outcome
+
+best("MD", "pneumonia")
+#[1] "GREATER BALTIMORE MEDICAL CENTER"

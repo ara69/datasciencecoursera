@@ -6,6 +6,8 @@ oc <- read.hospital.data("heart attack")
 rank.number(oc, "best")
 rank.number(oc, "worst")
 rank.number(oc, 10)
+rank.number(oc, 4o)
+
 
 class(oc)
 names(oc)
